@@ -262,6 +262,9 @@ type Options struct {
 	// Should all HTTP requests and responses be logged (excluding body)?
 	HTTPDebug null.String `json:"httpDebug" envconfig:"K6_HTTP_DEBUG"`
 
+	// Http(s) Proxy url
+	ProxyUrl null.String `json:"proxyUrl" envconfig:"K6_HTTP_PROXY"`
+
 	// Accept invalid or untrusted TLS certificates.
 	InsecureSkipTLSVerify null.Bool `json:"insecureSkipTLSVerify" envconfig:"K6_INSECURE_SKIP_TLS_VERIFY"`
 

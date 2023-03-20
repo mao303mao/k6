@@ -10,6 +10,7 @@ import (
 	"net"
 	"net/http"
 	"net/http/cookiejar"
+	"net/url"
 	"strconv"
 	"strings"
 	"sync"
@@ -192,8 +193,15 @@ func (r *Runner) newVU(
 		//nolint:staticcheck // ignore SA1019 we can deprecate it but we have to continue to support the previous code.
 		tlsConfig.NameToCertificate = nameToCert
 	}
+
+	proxy := http.ProxyFromEnvironment                             // default use system Environment, ex: http_proxy, https_proxy
+	if strings.TrimSpace(r.Bundle.Options.ProxyUrl.String) != "" { // use custom http(s) proxy,ex: https://127.0.0.1:8888
+		proxy = func(req *http.Request) (*url.URL, error) {
+			return url.Parse(strings.TrimSpace(r.Bundle.Options.ProxyUrl.String))
+		}
+	}
 	transport := &http.Transport{
-		Proxy:               http.ProxyFromEnvironment,
+		Proxy:               proxy,
 		TLSClientConfig:     tlsConfig,
 		DialContext:         dialer.DialContext,
 		DisableCompression:  true,
